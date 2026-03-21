@@ -1,0 +1,16 @@
+services:
+
+  serverbd:
+    build: ./basedatos/
+    image: wjma90/example-bd-kafka-tx
+    environment:
+      - MARIADB_ROOT_PASSWORD=toor
+      - MARIADB_DATABASE=demobd
+      - MARIADB_ROOT_HOST=%
+    restart: on-failure
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    # network_mode: host
+    # extra_hosts:
+    #   - "moby:127.0.0.1"

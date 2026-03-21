@@ -1,0 +1,59 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: jdbc:mysql://${host:localhost}:${port:3306}/${database:demobd}?useUnicode=true&characterEncoding=utf8&useSSL=false&requireSSL=false
+    username: root
+    password: ${password:toor}
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    # database-platform: org.hibernate.dialect.MySQL5Dialect
+    # defer-datasource-initialization: true
+    # generate-ddl: true
+    # hibernate:
+    #   ddl-auto: none
+    #   naming:
+    #     physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST:localhost:9092}
+    producer:
+      security:
+        protocol: PLAINTEXT
+      acks: all
+      transaction-id-prefix: "tx-${random.uuid}"
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        "[enable.idempotence]": true
+        "[transactional.id]": tx-id-${random.uuid}
+
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+
+app:
+  topic:
+    cuentas: ${TOPIC_A:cuentas}
+    movimientos: ${TOPIC_B:movimientos}
+
+logging:
+  level:
+    root: INFO
+    "[org.springframework.web]": INFO
+    "[org.springframework.kafka]": INFO
+    "[com.example]": DEBUG
+
+# testing
+# curl -i -X POST -H 'Content-Type: application/json' -d '{"nombre":"fulano","edad":18,"sexo":"M"}' http://localhost:8080/api/personas/
+# curl -i -X POST -H 'Content-Type: application/json' -d '{"id":1,"nombre":"fulano","edad":18,"sexo":"M"}' http://localhost:8080/api/personas/
+# curl -i http://localhost:8080/api/personas/
