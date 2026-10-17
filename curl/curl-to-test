@@ -1,0 +1,96 @@
+curl -i http://localhost:8081/api/cuentas
+curl -i http://localhost:8081/api/movimientos
+curl -i http://localhost:8082/api/clientes
+
+curl -i -X POST -H 'Content-type: application/json' http://localhost:8082/api/clientes \
+-d '{
+    "codigo": "11223344",
+    "nombre": "fulano",
+    "edad": "40",
+    "sexo": "M"
+}'
+
+curl -i -X POST -H 'Content-type: application/json' http://localhost:8082/api/clientes \
+-d '{
+    "codigo": "11223344",
+    "nombre": "fulano",
+    "edad": "40",
+    "sexo": "M",
+    "ctas": [
+        {
+            "codigo": "c001",
+            "activo": true,
+            "movimientos": [{
+                "codigo": "mov0001",
+                "monto": 1000.00,
+                "procesado": true,
+                "fecha": "2023-05-03 20:00:00"
+            },{
+                "codigo": "mov0002",
+                "monto": -0.10,
+                "procesado": true,
+                "fecha": "2023-05-03 20:00:10"
+            }]
+        }
+    ]
+}'
+
+curl -i -X POST -H 'Content-type: application/json' http://localhost:8082/api/clientes \
+-d '{
+    "codigo": "11223344",
+    "nombre": "fulano",
+    "edad": "40",
+    "sexo": "M",
+    "ctas": [
+        {
+            "codigo": "c001",
+            "activo": true,
+            "movimientos": []
+        }
+    ]
+}'
+
+curl -i -X POST -H 'Content-type: application/json' http://localhost:8082/api/clientes \
+-d '{
+    "codigo": "11223344",
+    "nombre": "fulano",
+    "edad": "40",
+    "sexo": "M",
+    "ctas": [
+        {
+            "codigo": "c001",
+            "activo": true,
+            "movimientos": [{
+                "codigo": "mov0004",
+                "monto": -10.90,
+                "procesado": false,
+                "fecha": "2023-05-03 20:15:10"
+            }]
+        }
+    ]
+}'
+
+// error cuando cliente es null (cliente no lo hemos especificado)
+curl -i -X POST -H 'Content-type: application/json' http://localhost:8082/api/cuentas \
+-d '[
+        {
+            "codigo": "c002",
+            "activo": true,
+            "movimientos": [{
+                "codigo": "mov0001",
+                "monto": 0.10,
+                "procesado": false,
+                "fecha": "2023-05-03 20:15:00"
+            }]
+        }
+    ]'
+
+// error cuando cta es null (cliente no lo hemos especificado)
+curl -i -X POST -H 'Content-type: application/json' http://localhost:8082/api/movimientos \
+-d '[{
+                "codigo": "mov0005",
+                "cuenta": "c001",
+                "monto": 0.30,
+                "procesado": false,
+                "fecha": "2023-05-03 20:15:00"
+            }]'
